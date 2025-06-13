@@ -7,7 +7,7 @@ import cv2
 import numpy as np
 import pandas as pd
 
-# --- Configuración global (ajustable si es necesario) ---
+# --- Configuración global (ajustablpy  si es necesario) ---
 MODEL_STORAGE_DIRECTORY = '.'
 READER = None # Se inicializará una vez
 REGIONS_OF_INTEREST = [] # Almacenará las ROIs seleccionadas interactivamente
@@ -68,9 +68,14 @@ def click_and_crop_opencv(event, x, y, flags, param):
 def preprocess_image(img):
     # Convertir a escala de grises
     gray_image = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    
+    # Aplicacion de Algoritmo SIFT
+    sift = cv2.SIFT.create()
+    keypoint = sift.detect(gray_image, None)
+    sift_result= cv2.drawKeypoints(gray_image, keypoint, img)
 
     # Desenfoque Gaussiano
-    blurred_image = cv2.GaussianBlur(gray_image, (5, 5), 0)
+    blurred_image = cv2.GaussianBlur(sift_result, (5, 5), 0)
 
     # Binarización adaptativa
     binary_image = cv2.adaptiveThreshold(blurred_image, 255,
